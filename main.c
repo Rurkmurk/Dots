@@ -8,7 +8,7 @@
 
 #define TIME_EASY_LEVEL		6000
 #define TIME_MEDIUM_LEVEL	12000
-#define TIME_HARD_LEVEL		24000
+#define TIME_HARD_LEVEL		21000
 
 
 #define OFFSET_EASY_X 		60
@@ -271,7 +271,7 @@ void menu_screen()
 			mouse_y=184;
 			mouse_set(152,184);
 			
-			sfx_play(SFX_MOVE,8);
+			
 			
 			if(key&JOY_FIRE)
 			{
@@ -288,14 +288,18 @@ void menu_screen()
 			
 			if(key&JOY_UP)
 			{
+				level_temp=level;
 				level--;
 				if (level<1) level=1;
+				if (level_temp!=level) sfx_play(SFX_MOVE,8);
 			}
 			
 			if(key&JOY_DOWN)
 			{
+				level_temp=level;
 				level++;
 				if (level>4) level=4;
+				if (level_temp!=level) sfx_play(SFX_MOVE,8);
 			}
 			while (joystick());
 		}
@@ -357,6 +361,7 @@ void menu_screen()
 void level_gen()
 {
 	u8 n;
+	u8 summ_dot=0;
 	
 	switch (level)
 	{
@@ -397,8 +402,11 @@ void level_gen()
 			{
 				dot_map[map_x][map_y]=1;
 			}
+			summ_dot+=dot_map[map_x][map_y];
 			scr_map[map_x][map_y]=0;
 		}
+		
+	if (level==1&&summ_dot==9||level==2&&summ_dot==16||summ_dot==25) level_gen();
 	
 	output_score();
 	
@@ -651,7 +659,7 @@ void dot_set()
 void win()
 {
 	u16 score=0;
-	u8 multiplier=1;
+	u8 multiplier=0;
 	
 	switch (level)
 	{
@@ -685,6 +693,8 @@ void win()
 		t=t_total;
 	}
 
+	if (score==0) score=1;
+	
 	summ_score+=score;
 	
 	sfx_play(SFX_COMPLETED,8);
