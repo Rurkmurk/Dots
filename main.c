@@ -225,103 +225,10 @@ void output_expertlist()
 	bright_down();
 }
 
-// menu
-void menu_screen()
+// menu switch lewel
+void switch_level()
 {
-	u8 key, i;
-	u8 mouse_en=TRUE;
-	i8 level_temp;
-	
-	level=1;
-	
-	clear_screen(0);
-	
-	draw_image(0,0,IMG_MENU);
-	draw_image(17,5,IMG_EASY_ENABLE);
-	
-	swap_screen();
-	bright_up();
-	
-	while (TRUE)
-	{
-		i=mouse_pos(&mouse_x,&mouse_y);
-		if (i==MOUSE_LBTN)
-		{
-			sfx_play(SFX_DOTDEL,8);
-			if (level==4)
-			{
-				bright_down();
-				set_sprite(0,0,0,SPRITE_END);
-				swap_screen();
-				set_sprite(0,0,0,SPRITE_END);
-				output_expertlist();
-				menu_screen();
-			}
-			summ_score=0;
-			while(mouse_pos(&mouse_x,&mouse_y)==MOUSE_LBTN);
-			return;
-		}
-		
-		key=joystick();
-		
-		if(key!=FALSE)
-		{
-			mouse_en=FALSE;
-			mouse_x=152;
-			mouse_y=184;
-			mouse_set(152,184);
-			
-			
-			
-			if(key&JOY_FIRE)
-			{
-				sfx_play(SFX_DOTDEL,8);
-				if (level==4)
-				{
-					bright_down();
-					output_expertlist();
-					menu_screen();
-				}
-				summ_score=0;
-				return;
-			}
-			
-			if(key&JOY_UP)
-			{
-				level_temp=level;
-				level--;
-				if (level<1) level=1;
-				if (level_temp!=level) sfx_play(SFX_MOVE,8);
-			}
-			
-			if(key&JOY_DOWN)
-			{
-				level_temp=level;
-				level++;
-				if (level>4) level=4;
-				if (level_temp!=level) sfx_play(SFX_MOVE,8);
-			}
-			while (joystick());
-		}
-		
-		if (mouse_x<150 || mouse_y<180) mouse_en=TRUE;
-		if (mouse_en==TRUE)
-		{
-			mouse_set(mouse_x,mouse_y); 
-			set_sprite(0,mouse_x,mouse_y,6);
-			
-			level_temp=level;
-			if (mouse_x>56&&mouse_x<108)
-			{
-				if(mouse_y>32&&mouse_y<56) level=1;
-				if(mouse_y>64&&mouse_y<88) level=2;
-				if(mouse_y>96&&mouse_y<120) level=3;
-				if(mouse_y>128&&mouse_y<152) level=4;
-			}
-			if (level_temp!=level) sfx_play(SFX_MOVE,8);
-		}		
-
-		switch (level)
+	switch (level)
 		{
 			case 1:
 			draw_image(17,5,IMG_EASY_ENABLE);
@@ -351,8 +258,103 @@ void menu_screen()
 			draw_image(14,17,IMG_LIST_ENABLE);
 			break;
 		}
-		t=t_level;
 		swap_screen();
+		sfx_play(SFX_MOVE,8);
+}
+
+
+// menu
+void menu_screen()
+{
+	u8 key, i;
+	i8 level_temp;
+	
+	level=1;
+	
+	clear_screen(0);
+	
+	draw_image(0,0,IMG_MENU);
+	draw_image(17,5,IMG_EASY_ENABLE);
+	
+	swap_screen();
+	bright_up();
+	
+	while (TRUE)
+	{
+		
+		//mouse
+		i=mouse_pos(&mouse_x,&mouse_y);
+		if (i==MOUSE_LBTN)
+		{
+			sfx_play(SFX_DOTDEL,8);
+			if (level==4)
+			{
+				bright_down();
+				set_sprite(0,0,0,SPRITE_END);
+				swap_screen();
+				set_sprite(0,0,0,SPRITE_END);
+				output_expertlist();
+				menu_screen();
+			}
+			summ_score=0;
+			while(mouse_pos(&mouse_x,&mouse_y)==MOUSE_LBTN);
+			return;
+		}
+		mouse_set(mouse_x,mouse_y); 
+		set_sprite(0,mouse_x,mouse_y,6);
+		
+		level_temp=level;
+		if (mouse_x>56&&mouse_x<108)
+		{
+			if(mouse_y>32&&mouse_y<56) level=1;
+			if(mouse_y>64&&mouse_y<88) level=2;
+			if(mouse_y>96&&mouse_y<120) level=3;
+			if(mouse_y>128&&mouse_y<152) level=4;
+		}
+		if (level_temp!=level) switch_level();
+		swap_screen();
+		
+		
+		//keyboard
+		key=joystick();
+		
+		if(key!=FALSE)
+		{
+			mouse_x=152;
+			mouse_y=184;
+			mouse_set(152,184);
+			
+			if(key&JOY_FIRE)
+			{
+				sfx_play(SFX_DOTDEL,8);
+				if (level==4)
+				{
+					bright_down();
+					output_expertlist();
+					menu_screen();
+				}
+				summ_score=0;
+				return;
+			}
+			
+			if(key&JOY_UP)
+			{
+				level_temp=level;
+				level--;
+				if (level<1) level=1;
+				if (level_temp!=level) switch_level();
+			}
+			
+			if(key&JOY_DOWN)
+			{
+				level_temp=level;
+				level++;
+				if (level>4) level=4;
+				if (level_temp!=level) switch_level();
+			}
+			while (joystick());
+		}
+		t=t_level;
 	}
 }
 
@@ -820,7 +822,7 @@ void main(void)
 			}
 		}
 		
-		// mouse control
+		//mouse control
 		if (mouse_x<150 || mouse_y<180) mouse_en=TRUE;
 		if (mouse_en==TRUE)
 		{
