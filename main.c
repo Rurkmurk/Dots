@@ -270,6 +270,7 @@ void menu_screen()
 	i8 level_temp;
 	
 	level=1;
+	t_level=TIME_EASY_LEVEL;
 	
 	clear_screen(0);
 	
