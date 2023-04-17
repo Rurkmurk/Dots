@@ -41,7 +41,10 @@ set image.15=res\list_experts.bmp
 set image.16=res\easy.bmp
 set image.17=res\medium.bmp
 set image.18=res\hard.bmp
-set image.19=res\menu.bmp
+set image.20=res\menu.bmp
+
+set image.19=res\level_completed.bmp
+
 rem спрайты
 
 set sprite.0=res\sprites.bmp

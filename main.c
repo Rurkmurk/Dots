@@ -662,7 +662,11 @@ void dot_set()
 void win()
 {
 	u16 score=0;
+	u16 time_bonus;
 	u8 multiplier=0;
+	
+	u8 i;
+	u8 sec, min;
 	
 	switch (level)
 	{
@@ -678,21 +682,25 @@ void win()
 	if ((time()-t_old)<t_level/20)
 	{
 		score=10*multiplier;
-		t=t_total+t_level/10;
+		time_bonus=t_level/10;
+		t=t_total+time_bonus;
 	}
 	else if ((time()-t_old)<t_level/10)
 	{
 		score=5*multiplier;
-		t=t_total+t_level/20;
+		time_bonus=t_level/20;
+		t=t_total+time_bonus;
 	}
 	else if ((time()-t_old)<t_level/5)
 	{
 		score=2*multiplier;
-		t=t_total+50;
+		time_bonus=50;
+		t=t_total+time_bonus;
 	}
 	else
 	{
 		score=1*multiplier;
+		time_bonus=0;
 		t=t_total;
 	}
 
@@ -701,6 +709,29 @@ void win()
 	summ_score+=score;
 	
 	sfx_play(SFX_COMPLETED,8);
+	
+	while(joystick()||mouse_pos(&mouse_x,&mouse_y)==MOUSE_LBTN);
+	
+	set_sprite(0,0,0,SPRITE_END);
+	set_sprite(1,0,0,SPRITE_END); 
+	swap_screen();
+	set_sprite(0,0,0,SPRITE_END);
+	set_sprite(1,0,0,SPRITE_END);
+	draw_image(11,9,IMG_LEVEL_COMPLETED);
+
+	select_image(IMG_FONT);
+	color_key(15);
+	min=(time_bonus/50)/60;
+	sec=(time_bonus/50)%60;
+	for (i=0;i<=1;i++)
+	{
+		draw_tile_key(24-i,13,16+(min%10));
+		min/=10;
+		draw_tile_key(26-i,13,16+(sec%10));
+		sec/=10;
+	}
+	swap_screen();
+	press_start();
 	
 	level_gen();
 }
